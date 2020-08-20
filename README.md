@@ -61,8 +61,7 @@ To launch apollo, first launch and enter a container as described in the previou
 ## Installing LGSVL Python API
 ### Cloning the Repository
 
-    git clone https://github.com/lgsvl/PythonAPI.git
-    
+    git clone https://github.com/lgsvl/PythonAPI.git    
 ### Requirements
 
 * Python 3.5 or higher
@@ -84,4 +83,10 @@ To launch apollo, first launch and enter a container as described in the previou
     
 ### Running AV-Fuzzer
 * Launching Apollo alongside the simulator (see the section above)
-* go to AV-Fuzzer directory cd AV-Fuzzer
+* go to AV-Fuzzer directory and choose the driving environment you want to test 
+  * `cd <where you put the AV-Fuzzer>/AV-Fuzzer/freeway` 
+  * or
+  * `cd <where you put the AV-Fuzzer>/AV-Fuzzer/urban` 
+* `python3 drive_experiment.py`
+* If you want to continue the previous experiment from a saved checkpoint, please uncomment the set checkpoint line and in drive_experiment.py 
+  
