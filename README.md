@@ -8,7 +8,7 @@
   
 ## Run AV-Fuzzer
   * Connect Apollo to LGSVL
-  * Configure "simulation.py", "liability.py", and "drive_experiment.py" for driving environments, safety violation constraints, and experiment parameters
+  * Configurate "simulation.py", "liability.py", and "drive_experiment.py" for driving environments, safety violation constraints, and experiment parameters
   * Run "python3 drive_experiment.py"
 
 ## Paper
