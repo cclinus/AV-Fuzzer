@@ -1,0 +1,5 @@
+pop_size: 20
+max_gens: 20
+crossover_rate: 0.8
+mutation_rate: 0.02
+tournament_k: 3

@@ -1,0 +1,8 @@
+cloudiness: 25.0
+precipitation: 60.0
+wetness: 20.0
+sun_altitude_angle: 25.0
+wind_intensity: 15.0
+fog_density: 1.0
+fog_distance: 1.0
+fog_falloff: 0.1
