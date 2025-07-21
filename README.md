@@ -32,7 +32,10 @@ Configuration files are stored in the parameter directory. Key sections:
 - ga.yaml: Sets genetic algorithm parameters (pop_size, max_gens, crossover_rate, mutation_rate, tournament_k, diversity_weight
 
 ## Usage
-- python GA.py
+
+  ```sh
+  python GA.py
+  ```
 
 ## License
       
