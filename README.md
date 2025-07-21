@@ -8,7 +8,13 @@ Automatically evolves test scenarios using configurable parameters:
 - Number of generations
 - Crossover and mutation rates
 - Tournament selection size
-
+### Configurable Simulation Parameters
+Enables realistic control and interaction of NPC vehicles and pedestrians in simulation.
+Supports flexible scenario customization, including:
+- Weather and lighting conditions
+- NPC vehicle and pedestrian behaviors
+- Ego vehicle start and destination locations
+  
 ## Installation
 1. Clone the repository
    ```sh
