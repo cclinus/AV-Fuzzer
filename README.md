@@ -20,8 +20,8 @@ AV-fuzzer is an autonomous vehicle scenario fuzz testing framework built on the 
    - Download and extract CARLA from the official site.
    - Start the CARLA server:
    ```sh
-    ./CarlaUE4.sh (linux)
-    .\CarlaUE4.exe (windows)
+    ./CarlaUE4.sh (in Linux)
+    .\CarlaUE4.exe (in Windows)
    ```
 ## Configuration
 Configuration files are stored in the parameter directory. Key sections:
