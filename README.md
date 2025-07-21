@@ -1,10 +1,13 @@
  # AV-fuzzer
-AV-fuzzer is an autonomous vehicle scenario fuzz testing framework built on the CARLA simulator. It uses a genetic algorithm to automatically generate diverse test scenarios for evaluating vehicle safety under varying environmental conditions and NPC behaviors.
+AV-Fuzzer is a scenario fuzz testing framework for autonomous vehicles, built on top of the CARLA simulator. It leverages a genetic algorithm to automatically generate diverse and safety-critical driving scenarios by mutating environmental conditions and non-player character (NPC) behaviors.
 
-## Features
-- Genetic algorithm–based scenario generation (configurable population size, number of generations, crossover rate, mutation rate, tournament size)
-- Integration with CARLA BehaviorAgent for realistic NPC control
-- Configurable weather parameters, NPC behaviors, and vehicle start/end locations
+## Key Features
+### Genetic Algorithm–Based Scenario Generation
+Automatically evolves test scenarios using configurable parameters:
+- Population size
+- Number of generations
+- Crossover and mutation rates
+- Tournament selection size
 
 ## Installation
 1. Clone the repository
@@ -26,9 +29,7 @@ AV-fuzzer is an autonomous vehicle scenario fuzz testing framework built on the 
 ## Configuration
 Configuration files are stored in the parameter directory. Key sections:
 - spawn.yaml: Defines vehicle start and end points
-
 - weather.yaml: Specifies weather conditions
-
 - ga.yaml: Sets genetic algorithm parameters (pop_size, max_gens, crossover_rate, mutation_rate, tournament_k, diversity_weight
 
 ## Usage
@@ -38,5 +39,6 @@ Configuration files are stored in the parameter directory. Key sections:
   ```
 ## Paper
 - AV-FUZZER: Finding Safety Violations in Autonomous Driving Systems (ISSRE'20)
+  
 ## License
 This project is licensed under the BSD 3-Clause License. See the [LICENSE](./LICENSE) file for details.      
