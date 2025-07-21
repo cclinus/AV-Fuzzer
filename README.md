@@ -10,7 +10,7 @@ AV-fuzzer is an autonomous vehicle scenario fuzz testing framework built on the 
 1. Clone the repository
    ```sh
    https://github.com/cclinus/AV-Fuzzer.git
-   cd av-fuzzer
+   cd av-fuzzer/carla_sim/
    ```
 2. Install Python dependencies
    ```sh
