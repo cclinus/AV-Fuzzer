@@ -13,3 +13,6 @@
 
 ## Paper
   * AV-FUZZER: Finding Safety Violations in Autonomous Driving Systems (ISSRE'20)
+
+
+The support of LGSVL simulator has been discountinued and so this directory has been deprecated.
