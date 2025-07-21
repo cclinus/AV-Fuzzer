@@ -39,4 +39,4 @@ Configuration files are stored in the parameter directory. Key sections:
 ## Paper
 - AV-FUZZER: Finding Safety Violations in Autonomous Driving Systems (ISSRE'20)
 ## License
-      
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](./LICENSE) file for details.      
