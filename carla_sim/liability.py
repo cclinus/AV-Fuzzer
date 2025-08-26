@@ -204,10 +204,10 @@ def is_ego_fault(ego, npc):
         result = cases[i](ego_trans, ego_box, npc_trans, npc_box, crossed)
 
         #3a. If the scenario applies, return its determination
-        if (result[0]):
+        if (result[0]):        
             answer = result[1]
             collision_case = cases[i].__name__
             break
     
-    scenario_debug(ego, npc, crossed, answer[0], collision_case, True)
+    scenario_debug(ego, npc, crossed, answer, collision_case, True)
     return answer
