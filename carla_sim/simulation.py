@@ -27,7 +27,7 @@ def run_simulation(spawn_config, weather_params,
 
     client = carla.Client("localhost", 2000)
     client.set_timeout(10.0)
-    client.load_world('Town03')
+    client.load_world(spawn_config['map'])
     world = client.get_world()
     tools.set_weather(world, weather_params)
 
