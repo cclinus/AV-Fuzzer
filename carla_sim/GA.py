@@ -98,7 +98,7 @@ def mutate(ind, spawn_config, mutation_rate=0.02):
                 lst[i] = tools.generate_npc_behaviors(cfg,1,extra_steer_perturb=True)[0]
     return (b1, b2)
 
-def genetic_fuzzer(spawn_config, weather_params,
+def genetic_fuzzer(map, spawn_config, weather_params,
                    pop_size=10, max_gens=5,
                    crossover_rate=0.2,
                    mutation_rate=0.3,
@@ -139,8 +139,8 @@ def genetic_fuzzer(spawn_config, weather_params,
 
         for ind in population:
             fit,res = simulation.evaluate_individual(
-                spawn_config, weather_params, ind,
-                tick_interval=tick_interval,
+                map, spawn_config, weather_params,
+                ind, tick_interval=tick_interval,
                 max_frames=max_frames
             )
             raw_fitness.append(fit)
@@ -224,8 +224,11 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--genetics', default='parameters/GA.yaml', type=str, metavar='path/to/genetics.yaml')
     parser.add_argument('-w', '--weather', default='parameters/weather.yaml', type=str, metavar='path/to/weather.yaml')
     parser.add_argument('-s', '--spawn', default='parameters/spawn.yaml', type=str, metavar='path/to/spawn.yaml')
+    parser.add_argument('-m', '--map', default="Town03", type=str, metavar='map')
 
     args = parser.parse_args()
+
+    map = args.map
 
     ga_cfg = tools.load_ga_config(args.genetics)
 
@@ -240,6 +243,7 @@ if __name__ == '__main__':
 
 
     best_ind, best_fit = genetic_fuzzer(
+        map,
         spawn_config,
         weather_config,
         pop_size       = POP_SIZE,

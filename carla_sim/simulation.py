@@ -19,7 +19,7 @@ SimulationResult = namedtuple('SimulationResult', [
     'hitTime'      # Frame index when collision happened
 ])
 
-def run_simulation(spawn_config, weather_params,
+def run_simulation(map, spawn_config, weather_params,
                    npc1_behaviors, npc2_behaviors,
                    tick_interval=0.05,
                    max_frames=500):
@@ -27,7 +27,7 @@ def run_simulation(spawn_config, weather_params,
 
     client = carla.Client("localhost", 2000)
     client.set_timeout(10.0)
-    client.load_world(spawn_config['map'])
+    client.load_world(map)
     world = client.get_world()
     tools.set_weather(world, weather_params)
 
@@ -154,7 +154,7 @@ def run_simulation(spawn_config, weather_params,
 
 
 
-def evaluate_individual(spawn_config, weather_params, individual,
+def evaluate_individual(map, spawn_config, weather_params, individual,
                         tick_interval=0.05, max_frames=500):
 
     npc1_behaviors, npc2_behaviors = individual
@@ -163,6 +163,7 @@ def evaluate_individual(spawn_config, weather_params, individual,
 
 
     result = run_simulation(
+        map,
         spawn_config,
         weather_params,
         npc1_behaviors,
