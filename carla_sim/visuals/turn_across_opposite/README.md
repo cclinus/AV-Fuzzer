@@ -32,8 +32,8 @@ Category 4: Change Trafficway Vehicle Turning
         - NPC: 402
 - scenario_3
     - Map: Town03
-    - Description: The ego vehicle fails to yield for an NPC vehicle in an intersection
-    - Fault: ego
+    - Description: An NPC fails to properly slow down and hits the ego
+    - Fault: NPC
     - ACC_CONFIG
         - ego: 401
         - NPC: 402
