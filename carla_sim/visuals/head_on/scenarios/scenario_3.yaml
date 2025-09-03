@@ -1,21 +1,21 @@
 map:
-  "Town01"
+  "Town03"
   
 ev:
-  start: [213.880447, 59.902679, 0.300000]
-  end: [243.880447, 59.902679, 0.300000]
+  start: [60.874001, 7.542412, 0.3]
+  end: [205.874001, 8.542412, 0.3]
   rotation: [0.0, 0.0, 0.0]
 
 npc1:
-  start: [233.880447, 59.902679, 0.300000]
-  throttle_range: [0.0, 0.0]
+  start: [70.874001, 5.542412, 0.3]
+  throttle_range: [0.5, 0.6]
   brake_chance: 0.0
   brake_range: [0.0, 0.5]
   steer_range: [0.0, 0.0]
-  rotation: [0.0, 0.0, 0.0]
+  rotation: [0.0, 170, 0.0]
 
 npc2:
-  start: [183.880447, 59.902679, 0.300000]
+  start: [100.874001, 7.542412, 0.3]
   throttle_range: [0.2, 0.6]
   brake_chance: 1.0
   brake_range: [1.0, 1.0]

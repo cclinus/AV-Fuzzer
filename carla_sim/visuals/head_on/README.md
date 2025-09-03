@@ -14,3 +14,34 @@ Category 3: Same Trafficway, Opposite Directions
 ## Graphics
 - head_left: The ego vehicle (EV) performs a lateral move (left) and enters a front-to-front collision with the target vehicle (TV). In this case, the ego is at fault.
 - head_straight: The ego vehicle (EV) perofrms a lateral move (straight) and enters a front-to-front collision with the target vehicle (TV). In this case, the ego is at fault.
+
+## Scenarios
+- scenario_1:
+    - Map: Town01
+    - Description: A crash on a residential two-way street where an NPC is driving into the flow of traffic. The NPC then enters a front-to-front collision with the ego vehicle
+    - Fault: NPC
+    - ACC_CONFIG
+        - ego: 302
+        - NPC: 302
+- scenario_2:
+    - Map: Town02
+    - Description: A crash on a residential two-way street where the ego vehicle is driving into the flow of traffic. An NPC then enters a front-to-front collision with the ego vehicle
+    - Fault: ego
+    - ACC_CONFIG
+        - ego: 302
+        - NPC: 302
+- scenario_3:
+    - Map: Town03
+    - Description: A crash on an urban one-way street where an NPC is driving into the flow of traffic at an angle. The NPC then enters an angle collision with the ego vehicle
+    - Fault: NPC
+    - ACC_CONFIG
+        - ego: 302
+        - NPC: 301
+
+## Simulated
+
+Images of a rear end crash simulated in CARLA, spawned from scenarios/scenario_1.yaml.
+
+- collision_angle: An angled view of the crash
+- collision_bird: A bird's-eye view of the crash, mirroring what is seen in the graphics directory
+- collision_high: A higher-up view of the crash, similar to what is seen when using the AV-Fuzzer tool (albeit more zoomed in)

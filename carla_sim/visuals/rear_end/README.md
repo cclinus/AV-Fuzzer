@@ -17,18 +17,25 @@ Category 2: Same Trafficway, Same Direction
 ## Scenarios
 - scenario_1.yaml:
     - Map: Town01
-    - Description: A crash on a residential two-way street where the ego vehicle (blue) has stopped for an NPC (red). The NPC then backs up and enters a rear-to-front collision with the ego vehicle
-    - Fault: NPC
+    - Description: A crash on a residential two-way street where the ego vehicle fails to stop for a halted NPC and enters a front-to-rear collision.
+    - Fault: EGO
+    - ACC_CONFIG:
+        - ego: 201
+        - NPC: 202
 - scenario_2.yaml:
     - Map: Town02
-    - Description: A crash on a residential two-way street where the ego vehicle (blue) stops for a halted NPC (red). A high-speed NPC (red) then enters a front-to-rear collision with the ego vehicle
+    - Description: A crash on a residential two-way street where the ego vehicle stops for a halted NPC. A high-speed NPC then enters a front-to-rear collision with the ego vehicle
     - Fault: NPC
+    - ACC_CONFIG:
+        - ego: 202
+        - NPC: 201
 - scenario_3.yaml:
     - Map: Town03
-    - Description: A crash on an urban one-way street where the ego vehicle (blue) stops for a halted NPC (red). A medium-speed NPC (red) then enters a front-to-rear collision with the ego vehicle
+    - Description: A crash on an urban one-way street where the ego vehicle stops for a halted NPC. A medium-speed NPC then enters a front-to-rear collision with the ego vehicle
     - Fault: NPC
-
-Note: Due to the nature of the ADS (Carla ADS) used for simulating, it is difficult to obtain simulations of a rear end crash where the ego vehicle is at fault. For all intents and purposes, a scenario where the ego is at fault would look similar to scenario_1, but would have the ego move into the NPC, rather than the NPC back into the ego.
+    - ACC_CONFIG
+        - ego: 202
+        - NPC: 201
 
 ## Simulated
 
