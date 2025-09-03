@@ -18,21 +18,21 @@ Category 3: Same Trafficway, Opposite Directions
 ## Scenarios
 - scenario_1:
     - Map: Town01
-    - Description: A crash on a residential two-way street where an NPC is driving into the flow of traffic. The NPC then enters a front-to-front collision with the ego vehicle
+    - Description: An NPC enters a head-on collision with the ego by driving into the flow of traffic
     - Fault: NPC
     - ACC_CONFIG
         - ego: 302
         - NPC: 302
 - scenario_2:
     - Map: Town02
-    - Description: A crash on a residential two-way street where the ego vehicle is driving into the flow of traffic. An NPC then enters a front-to-front collision with the ego vehicle
+    - Description: The ego enters a head-on collision with an NPC by driving into the flow of traffic
     - Fault: ego
     - ACC_CONFIG
         - ego: 302
         - NPC: 302
 - scenario_3:
     - Map: Town03
-    - Description: A crash on an urban one-way street where an NPC is driving into the flow of traffic at an angle. The NPC then enters an angle collision with the ego vehicle
+    - Description: An NPC enters a head-on collision with the ego by driving into the flow of traffic at an angle
     - Fault: NPC
     - ACC_CONFIG
         - ego: 302
