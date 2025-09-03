@@ -17,21 +17,21 @@ Category 2: Same Trafficway, Same Direction
 ## Scenarios
 - scenario_1.yaml:
     - Map: Town01
-    - Description: A crash on a residential two-way street where the ego vehicle fails to stop for a halted NPC and enters a front-to-rear collision.
+    - Description: The ego fails to stop for a halted NPC
     - Fault: EGO
     - ACC_CONFIG:
         - ego: 201
         - NPC: 202
 - scenario_2.yaml:
     - Map: Town02
-    - Description: A crash on a residential two-way street where the ego vehicle stops for a halted NPC. A high-speed NPC then enters a front-to-rear collision with the ego vehicle
+    - Description: An NPC fails to stop for the ego, which has halted for another NPC
     - Fault: NPC
     - ACC_CONFIG:
         - ego: 202
         - NPC: 201
 - scenario_3.yaml:
     - Map: Town03
-    - Description: A crash on an urban one-way street where the ego vehicle stops for a halted NPC. A medium-speed NPC then enters a front-to-rear collision with the ego vehicle
+    - Description: An NPC fails to stop for the ego, which has halted for another NPC
     - Fault: NPC
     - ACC_CONFIG
         - ego: 202

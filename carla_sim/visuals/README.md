@@ -7,3 +7,4 @@ Visuals demonstrating common crash types. Based off of NHTSA data (found in ACC_
 - graphics/: 2D bird's-eye view(s) of the crash type
 - simulated/: 3D angled view(s) of the crash type
 - scenarios/: 3-5 test scenarios that yield the crash type
+    - All scenarios done with the CARLA BehaviorAgent set to "normal" behavior
