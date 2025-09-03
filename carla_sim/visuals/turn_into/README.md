@@ -16,3 +16,34 @@ Category 4: Change Trafficway Vehicle Turning
 ## Graphics
 - turn_before: The ego vehicle (EV) begins to make a left turn into a lane of traffic
 - turn_crash: The EV has entered a crash with the target vehicle (TV)
+
+## Scenarios
+- scenario_1:
+    - Map: Town01
+    - Description: The ego runs a red light and gets hit by an NPC
+    - Fault: ego
+    - ACC_CONFIG
+        - ego: 414
+        - NPC: 415
+- scenario_2:
+    - Map: Town02
+    - Description: The ego fails to yield during a right turn and hits an NPC
+    - Fault: ego
+    - ACC_CONFIG
+        - ego: 412
+        - NPC: 413
+- scenario_3:
+    - Map: Town03
+    - Description: The ego fails to yield during a left turn and gets hit by an NPC
+    - Fault: ego
+    - ACC_CONFIG
+        - ego: 414
+        - NPC: 415
+
+## Simulated
+
+Images of a rear end crash simulated in CARLA, spawned from scenarios/scenario_2.yaml.
+
+- collision_angle: An angled view of the crash
+- collision_bird: A bird's-eye view of the crash, mirroring what is seen in the graphics directory
+- collision_high: A higher-up view of the crash, similar to what is seen when using the AV-Fuzzer tool (albeit more zoomed in)
