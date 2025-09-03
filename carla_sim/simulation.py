@@ -45,24 +45,24 @@ def run_simulation(spawn_config, weather_params,
 
     blueprint_library = world.get_blueprint_library()
     vehicle_bp = blueprint_library.filter('vehicle.tesla.model3')[0]
-    ev_tf   = tools.list_to_transform(spawn_config['ev']['start'])
-    ev_end  = tools.list_to_transform(spawn_config['ev']['end']).location
+    ev_tf   = tools.lists_to_transform(spawn_config['ev']['start'], spawn_config['ev']['rotation'])
+    ev_end  = tools.lists_to_transform(spawn_config['ev']['end']).location
 
     vehicle = world.spawn_actor(vehicle_bp, ev_tf)
     agent = BehaviorAgent(vehicle, behavior='normal')
     agent.set_destination(ev_end)
 
 
-    npc1 = tools.spawn_npc(world, blueprint_library, tools.list_to_transform(spawn_config['npc1']['start']))
-    npc2 = tools.spawn_npc(world, blueprint_library, tools.list_to_transform(spawn_config['npc2']['start']))
+    npc1 = tools.spawn_npc(world, blueprint_library, tools.lists_to_transform(spawn_config['npc1']['start'], spawn_config['npc1']['rotation']))
+    npc2 = tools.spawn_npc(world, blueprint_library, tools.lists_to_transform(spawn_config['npc2']['start'], spawn_config['npc2']['rotation']))
 
     walker1_bp = blueprint_library.find('walker.pedestrian.0001')
     walker2_bp = blueprint_library.find('walker.pedestrian.0002')
 
-    ped1_start = tools.list_to_transform(spawn_config['pedestrian1']['start'])
+    ped1_start = tools.lists_to_transform(spawn_config['pedestrian1']['start'])
     ped1_end = tools.list_to_location(spawn_config['pedestrian1']['end'])
 
-    ped2_start = tools.list_to_transform(spawn_config['pedestrian2']['start'])
+    ped2_start = tools.lists_to_transform(spawn_config['pedestrian2']['start'])
     ped2_end = tools.list_to_location(spawn_config['pedestrian2']['end'])
 
     walker1 = world.spawn_actor(walker1_bp, ped1_start)
