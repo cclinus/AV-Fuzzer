@@ -32,7 +32,7 @@ Note: Due to the nature of the ADS (Carla ADS) used for simulating, it is diffic
 
 ## Simulated
 
-Images of a simulated rear end crash, spawned from scenarios/scenario_3.yaml.
+Images of a rear end crash simulated in CARLA, spawned from scenarios/scenario_3.yaml.
 
 - collision_angle: An angled view of the crash
 - collision_bird: A bird's-eye view of the crash, mirroring what is seen in the graphics directory

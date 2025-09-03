@@ -4,6 +4,7 @@ map:
 ev:
   start: [213.880447, 59.902679, 0.300000]
   end: [243.880447, 58.902679, 0.300000]
+  rotation: [0.0, 0.0, 0.0]
 
 npc1:
   start: [218.880447, 59.902679, 0.300000]
@@ -11,6 +12,7 @@ npc1:
   brake_chance: 0.0
   brake_range: [0.0, 0.5]
   steer_range: [0.0, 0.0]
+  rotation: [0.0, 0.0, 0.0]
 
 npc2:
   start: [183.880447, 59.902679, 0.300000]
@@ -18,6 +20,7 @@ npc2:
   brake_chance: 1.0
   brake_range: [1.0, 1.0]
   steer_range: [0.0, 0.0]
+  rotation: [0.0, 0.0, 0.0]
 
 pedestrian1:
   start: [65.874001, 3.542412, 0.3]
