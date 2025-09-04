@@ -85,6 +85,12 @@ def head_on(params, ego_params, npc_params):
 #main idea: if the contact point is in the front 2/3rds of the angled vehicle, it is at fault. otherwise, the straight vehicle is at fault
 #this stems from the idea that, if the straight vehicle hits the back 1/3rd of the angled vehicle, it should have yielded
 #this proportion can and should be adjusted to reflect reality
+
+#it may also be pertinent to determine if the angle vehicle was even allowed to change lanes
+#how to determine? need to find the rules of the lane the angle was coming from
+#waypoints do have get_left_lane and get_right_lane, but those themselves account for lane change rules
+#i.e. if the left lane was allowed to merge (for whatever reason) into the right, but not vice versa
+#just running waypoint.get_left_lane() to find out the rules, would not work
 def sideswipe(params, ego_params, npc_params):
     angle = None
     straight = None
@@ -105,13 +111,17 @@ def sideswipe(params, ego_params, npc_params):
         angle = npc_params
         straight = ego_params
 
+    lane_change = params['lane_change']
 
+    #add some logic here about if lane change is allowed or not
+    
     angle_loc = angle['tf'].location
     straight_loc = straight['tf'].location
 
     if straight_loc.x > angle_loc.x:
         return (True, ego_straight)
 
+    #TO-DO: add logic: rotation of the vehicle affects its x length
     angle_len = angle['box'].extent.x * 2
     angle_back = angle_loc.x - angle['box'].extent.x
     straight_front = straight_loc.x + straight['box'].extent.x
@@ -215,6 +225,8 @@ def is_ego_fault(ego, npc, waypoint):
     lane_tf = waypoint.transform
     lane_yaw = lane_tf.rotation.yaw % 360
     lane_id = waypoint.lane_id
+    junction = waypoint.is_junction()
+    lane_change = waypoint.lane_change
 
     ego_box = ego.bounding_box
     ego_tf = ego.get_transform()
@@ -239,6 +251,8 @@ def is_ego_fault(ego, npc, waypoint):
 
     parameters = {
         "lane_id" : lane_id,
+        "lane_change" : lane_change,
+        "junction" : junction,
     }
     ego_parameters = {
         "box" : ego_box,
