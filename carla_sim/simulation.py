@@ -29,6 +29,7 @@ def run_simulation(spawn_config, weather_params,
     client.set_timeout(10.0)
     client.load_world('Town03')
     world = client.get_world()
+    map = world.get_map()
     tools.set_weather(world, weather_params)
 
     spectator = world.get_spectator()
@@ -91,7 +92,8 @@ def run_simulation(spawn_config, weather_params,
             isHit = True
             hitTime = event.frame
             ev, npc = (event.actor, other) if event.actor.id == vehicle.id else (other, event.actor)
-            isEgoFault = liability.is_ego_fault(ev, npc)
+            waypoint = map.get_waypoint(ev.get_transform().location)
+            isEgoFault = liability.is_ego_fault(ev, npc, waypoint)
     collision_sensor.listen(on_collision)
 
 
