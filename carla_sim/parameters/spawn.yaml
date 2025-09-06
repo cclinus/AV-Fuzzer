@@ -1,6 +1,7 @@
 ev:
   start: [30.874001, 7.542412, 0.3]
   end: [205.874001, 8.542412, 0.3]
+  rotation: [0.0, 0.0, 0.0]
 
 npc1:
   start: [40.874001, 3.542412, 0.3]
@@ -8,6 +9,7 @@ npc1:
   brake_chance: 0.3
   brake_range: [0.0, 0.5]
   steer_range: [0.0, 0.02]
+  rotation: [0.0, 0.0, 0.0]
 
 npc2:
   start: [70.874001, 7.542412, 0.3]
@@ -15,6 +17,7 @@ npc2:
   brake_chance: 0.3
   brake_range: [0.0, 0.4]
   steer_range: [0.0, 0.02]
+  rotation: [0.0, 0.0, 0.0]
 
 pedestrian1:
   start: [65.874001, 3.542412, 0.3]

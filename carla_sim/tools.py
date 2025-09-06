@@ -37,9 +37,10 @@ def load_weather_yaml(path):
         return yaml.safe_load(f)
 def list_to_location(lst):
     return carla.Location(x=lst[0], y=lst[1], z=lst[2])
-
-def list_to_transform(lst):
-    return carla.Transform(list_to_location(lst), carla.Rotation())
+def list_to_rotation(lst):
+    return carla.Rotation(x=lst[0], y=lst[1], z=lst[2])
+def lists_to_transform(lst, lst2=[0,0,0]):
+    return carla.Transform(list_to_location(lst), list_to_rotation(lst2))
 
 def load_ga_config(path):
     if not os.path.exists(path):
