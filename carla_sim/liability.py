@@ -324,7 +324,7 @@ def is_ego_fault(ego, npc, waypoint):
     cases = [head_on, sideswipe, rear_end]
 
     answer = False
-    collision_case = "Unknown"
+    collision_case = "unknown"
     
     for i in range(len(cases)):
         result = cases[i](parameters, ego_parameters, npc_parameters)
@@ -388,7 +388,7 @@ def is_ego_fault_test(ego, npc, waypoint):
     cases = [head_on, sideswipe, rear_end]
 
     answer = False
-    collision_case = "Unknown"
+    collision_case = "unknown"
     
     for i in range(len(cases)):
         result = cases[i](parameters, ego_parameters, npc_parameters)

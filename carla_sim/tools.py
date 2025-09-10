@@ -149,7 +149,7 @@ def in_degree_range(degree, low, high):
     return (low <= degree) and (degree <= high)
 
 def is_straight(yaw):
-    return in_degree_range(yaw, 0, 15) or in_degree_range(345, 360)
+    return in_degree_range(yaw, 0, 15) or in_degree_range(yaw, 345, 360)
 
 #Rotates a carla.Location around the origin
 def rotate_location(loc, yaw):
