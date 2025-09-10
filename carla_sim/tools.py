@@ -145,3 +145,43 @@ def find_fitness(deltaDlist, dList, isEgoFault, isHit, hitTime,
     score = C - (weight_d * min_d + weight_deltaD * min_deltaD)
     return score
 
+def in_degree_range(degree, low, high):
+    return (low <= degree) and (degree <= high)
+
+def is_straight(yaw):
+    return in_degree_range(yaw, 0, 15) or in_degree_range(345, 360)
+
+#Rotates a carla.Location around the origin
+def rotate_location(loc, yaw):
+    r = math.radians(-1 * yaw)
+
+    x = loc.x * math.cos(r) - loc.y * math.sin(r)
+    y = loc.x * math.sin(r) + loc.y * math.cos(r)
+
+    return carla.Location(x, y, loc.z)
+
+#Rotates a carla.Vector3D around the origin
+def rotate_vector(vec, yaw):
+    #Reverse the rotation to account for lefthandedness
+    r = math.radians(-1 * yaw)
+
+    x = vec.x * math.cos(r) - vec.y * math.sin(r)
+    y = vec.x * math.sin(r) + vec.y * math.cos(r)
+
+    return carla.Vector3D(x, y, vec.z)
+
+#Adjusts the vehicle's coordinates to the local coordinates and orientation of the lane
+def adjust_to_lane(lane_tf, vehicle_tf):
+    adj_tf = carla.Transform()
+
+    adj_rot = carla.Rotation()
+    adj_rot.yaw = (vehicle_tf.rotation.yaw - lane_tf.rotation.yaw) % 360
+
+    adj_loc = carla.Location()
+    adj_loc.x = vehicle_tf.location.x - lane_tf.location.x
+    adj_loc.y = vehicle_tf.location.y - lane_tf.location.y
+    adj_loc.z = vehicle_tf.location.z - lane_tf.location.z
+
+    adj_tf.location = rotate_location(adj_loc, lane_tf.rotation.yaw % 360)
+    adj_tf.rotation = adj_rot
+    return adj_tf
