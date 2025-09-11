@@ -1,6 +1,6 @@
 import tools
 
-BUFFER = 0.40
+BUFFER = 0.35
 
 #Turn into collision type
 #   visuals/turn_into
@@ -168,7 +168,7 @@ def sideswipe(params, ego_params, npc_params):
 
 #Main idea: if the lead vehicle comes to a very abrupt stop, it should be at fault. otherwise, the trailing vehicle is at fault
 #TO-DO: develop a more robust idea. this is only one stage better than original
-#TO-DO: add logic about the lead coming to an abrupt stop
+#TO-DO: add more logic about the lead coming to an abrupt stop
 def rear_end(params, ego_params, npc_params):
 
     ego_ahead = npc_params['tf'].location.x < ego_params['tf'].location.x
@@ -200,8 +200,11 @@ def rear_end(params, ego_params, npc_params):
     lead_back = lead_vertices[0].x
     trail_front = trail_vertices[0].x
 
-    """lead_y_range = [lead_vertices[0].y, lead_vertices[0].y]
-    trail_y_range = [trail_vertices[0].y, trail_vertices[0].y]"""
+    lead_left = lead_vertices[0].y
+    lead_right = lead_vertices[0].y
+
+    trail_left = trail_vertices[0].y
+    trail_right = trail_vertices[0].y
 
     for i in range(8):
         lead_v = lead_vertices[i]
@@ -210,15 +213,29 @@ def rear_end(params, ego_params, npc_params):
         lead_back = min(lead_v.x, lead_back)
         trail_front = max(trail_v.x, trail_front)
 
-        """lead_y_range[0] = min(lead_v.y, lead_y_range[0])
-        lead_y_range[1] = max(lead_v.y, lead_y_range[1])
-        
-        trail_y_range[0] = min(trail_v.y, trail_y_range[0])
-        trail_y_range[1] = max(trail_v.y, trail_y_range[1])"""
+        lead_left = min(lead_v.y, lead_left)
+        lead_right = max(lead_v.y, lead_right)
+
+        trail_left = min(trail_v.y, trail_left)
+        trail_right = max(trail_v.y, trail_right)
 
     #Loose check for the trail actually being "behind" the lead
-    if trail_front - BUFFER > lead_back:
-        return (False, False)
+    """if trail_front - BUFFER > lead_back:
+        return (False, False)"""
+
+    """if lead_right - BUFFER < trail_left or trail_right - BUFFER < lead_left:
+        return (False, False)"""
+
+    lead_acc_avg = 0
+
+    lead_history = list(lead['hist'])[-10::]
+
+    for frame in lead_history:
+        lead_acc_avg += frame['acc'].x
+    lead_acc_avg /= 10
+
+    if (lead_acc_avg <= -1.5 * lead['box'].extent.x):
+        return (True, ego_ahead)
 
     return (True, not ego_ahead)
 
@@ -273,7 +290,7 @@ def scenario_debug(ego, npc, fault, crash, detailed=True):
 
 #Main idea: Collect data, run through each liability case in order
 #TO-DO: figure out how adjusting works in junctions
-def is_ego_fault(ego, npc, waypoint):
+def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     
     if not npc:
         return True
@@ -285,23 +302,36 @@ def is_ego_fault(ego, npc, waypoint):
 
     ego_box = ego.bounding_box
     ego_tf = ego.get_transform()
-    ego_acc = ego.get_acceleration()
-    ego_vel = ego.get_velocity()
 
     #We adjust our frame of reference to the lane waypoint
     #So calculations can be simple
     adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
-    adj_ego_acc = tools.rotate_vector(ego_acc, lane_yaw)
-    adj_ego_vel = tools.rotate_vector(ego_vel, lane_yaw)
+
+    ego_hist = []
+    
+    for e in list(ego_history):
+        frame = {}
+        frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
+        frame['vel'] = tools.rotate_vector(e.vector, lane_yaw)
+        frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
+
+        ego_hist.append(frame)
 
     npc_box = npc.bounding_box
     npc_tf = npc.get_transform()
-    npc_acc = npc.get_acceleration()
-    npc_vel = npc.get_velocity()
 
     adj_npc = tools.adjust_to_lane(lane_tf, npc_tf)
-    adj_npc_acc = tools.rotate_vector(npc_acc, lane_yaw)
-    adj_npc_vel = tools.rotate_vector(npc_vel, lane_yaw)
+
+    npc_hist = []
+    
+    for n in list(npc_history):
+        frame = {}
+        frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
+        frame['vel'] = tools.rotate_vector(n.vector, lane_yaw)
+        frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
+
+        npc_hist.append(frame)
+        
 
     parameters = {
         "lane_id" : lane_id,
@@ -310,15 +340,13 @@ def is_ego_fault(ego, npc, waypoint):
     ego_parameters = {
         "box" : ego_box,
         "tf" : adj_ego,
-        "acc" : adj_ego_acc,
-        "vel" : adj_ego_vel,
+        "hist" : ego_hist
     }
 
     npc_parameters = {
         "box" : npc_box,
         "tf" : adj_npc,
-        "acc" : adj_npc_acc,
-        "vel" : adj_npc_vel
+        "hist" : npc_history
     }
 
     cases = [head_on, sideswipe, rear_end]
@@ -350,22 +378,36 @@ def is_ego_fault_test(ego, npc, waypoint):
 
     ego_box = ego['box']
     ego_tf = ego['tf']
-    ego_acc = ego['acc']
-    ego_vel = ego['vel']
+
     
     adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
-    adj_ego_acc = tools.rotate_vector(ego_acc, lane_yaw)
-    adj_ego_vel = tools.rotate_vector(ego_vel, lane_yaw)
+
+    ego_hist = []
+    
+    for e in list(ego['hist']):
+        frame = {}
+        frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
+        frame['vel'] = tools.rotate_vector(e.vector, lane_yaw)
+        frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
+
+        ego_hist.append(frame)
+
 
     npc_box = npc['box']
     npc_tf = npc['tf']
-    npc_acc = npc['acc']
-    npc_vel = npc['vel']
+
 
     adj_npc = tools.adjust_to_lane(lane_tf, npc_tf)
-    adj_npc_acc = tools.rotate_vector(npc_acc, lane_yaw)
-    adj_npc_vel = tools.rotate_vector(npc_vel, lane_yaw)
-    
+
+    npc_hist = []
+
+    for n in list(npc['hist']):
+        frame = {}
+        frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
+        frame['vel'] = tools.rotate_vector(n.vector, lane_yaw)
+        frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
+
+        npc_hist.append(frame)
 
     parameters = {
         "lane_id" : lane_id,
@@ -374,15 +416,13 @@ def is_ego_fault_test(ego, npc, waypoint):
     ego_parameters = {
         "box" : ego_box,
         "tf" : adj_ego,
-        "acc" : adj_ego_acc,
-        "vel" : adj_ego_vel,
+        "hist" : ego_hist
     }
 
     npc_parameters = {
         "box" : npc_box,
         "tf" : adj_npc,
-        "acc" : adj_npc_acc,
-        "vel" : adj_npc_vel
+        "hist" : npc_hist
     }
 
     cases = [head_on, sideswipe, rear_end]

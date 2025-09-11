@@ -6,6 +6,7 @@ import sys
 import os
 import yaml
 from datetime import datetime
+import simulation
 
 def get_speed(actor):
     v = actor.get_velocity()
@@ -153,6 +154,7 @@ def is_straight(yaw):
 
 #Rotates a carla.Location around the origin
 def rotate_location(loc, yaw):
+    #Reverse the rotation to account for lefthandedness
     r = math.radians(-1 * yaw)
 
     x = loc.x * math.cos(r) - loc.y * math.sin(r)
@@ -185,3 +187,6 @@ def adjust_to_lane(lane_tf, vehicle_tf):
     adj_tf.location = rotate_location(adj_loc, lane_tf.rotation.yaw % 360)
     adj_tf.rotation = adj_rot
     return adj_tf
+
+def window_entry(tick, vehicle):
+    return simulation.WindowEntry(tick, vehicle.get_transform(), vehicle.get_velocity(), vehicle.get_acceleration())
