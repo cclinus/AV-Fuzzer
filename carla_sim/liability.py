@@ -226,7 +226,7 @@ def rear_end(params, ego_params, npc_params):
     """if lead_right - BUFFER < trail_left or trail_right - BUFFER < lead_left:
         return (False, False)"""
 
-    lead_acc_avg = 0
+    """lead_acc_avg = 0
 
     lead_history = list(lead['hist'])[-10::]
 
@@ -234,8 +234,8 @@ def rear_end(params, ego_params, npc_params):
         lead_acc_avg += frame['acc'].x
     lead_acc_avg /= 10
 
-    if (lead_acc_avg <= -1.5 * lead['box'].extent.x):
-        return (True, ego_ahead)
+    if (lead_acc_avg <= -3 * lead['box'].extent.x):
+        return (True, ego_ahead)"""
 
     return (True, not ego_ahead)
 
@@ -312,7 +312,7 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     for e in list(ego_history):
         frame = {}
         frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
-        frame['vel'] = tools.rotate_vector(e.vector, lane_yaw)
+        frame['vel'] = tools.rotate_vector(e.velocity, lane_yaw)
         frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
 
         ego_hist.append(frame)
@@ -327,8 +327,9 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     for n in list(npc_history):
         frame = {}
         frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
-        frame['vel'] = tools.rotate_vector(n.vector, lane_yaw)
+        frame['vel'] = tools.rotate_vector(n.velocity, lane_yaw)
         frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
+        
 
         npc_hist.append(frame)
         
@@ -382,15 +383,15 @@ def is_ego_fault_test(ego, npc, waypoint):
     
     adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
 
-    ego_hist = []
+    """ego_hist = []
     
     for e in list(ego['hist']):
         frame = {}
         frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
-        frame['vel'] = tools.rotate_vector(e.vector, lane_yaw)
+        frame['vel'] = tools.rotate_vector(e.velocity, lane_yaw)
         frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
 
-        ego_hist.append(frame)
+        ego_hist.append(frame)"""
 
 
     npc_box = npc['box']
@@ -401,28 +402,29 @@ def is_ego_fault_test(ego, npc, waypoint):
 
     npc_hist = []
 
-    for n in list(npc['hist']):
+    """for n in list(npc['hist']):
         frame = {}
         frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
-        frame['vel'] = tools.rotate_vector(n.vector, lane_yaw)
+        frame['vel'] = tools.rotate_vector(n.velocity, lane_yaw)
         frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
 
         npc_hist.append(frame)
-
+"""
     parameters = {
+        "lane_tf" : lane_tf,
         "lane_id" : lane_id,
         "lane_change" : lane_change,
     }
     ego_parameters = {
         "box" : ego_box,
         "tf" : adj_ego,
-        "hist" : ego_hist
+        #"hist" : ego_hist
     }
 
     npc_parameters = {
         "box" : npc_box,
         "tf" : adj_npc,
-        "hist" : npc_hist
+        #"hist" : npc_hist
     }
 
     cases = [head_on, sideswipe, rear_end]

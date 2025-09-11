@@ -222,7 +222,7 @@ def evaluate_individual(spawn_config, weather_params, individual,
 
 if __name__ == "__main__":
     weather_config = tools.load_weather_yaml('./parameters/weather.yaml')
-    spawn_config  = tools.load_spawn_yaml('./parameters/spawn.yaml')
+    spawn_config  = tools.load_spawn_yaml('./parameters/test.yaml')
 
     tick_interval  = 0.05
     max_frames     = 500

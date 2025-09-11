@@ -154,6 +154,10 @@ def is_straight(yaw):
 
 #Rotates a carla.Location around the origin
 def rotate_location(loc, yaw):
+
+    if not loc:
+        return carla.Location()
+
     #Reverse the rotation to account for lefthandedness
     r = math.radians(-1 * yaw)
 
@@ -164,6 +168,8 @@ def rotate_location(loc, yaw):
 
 #Rotates a carla.Vector3D around the origin
 def rotate_vector(vec, yaw):
+    if not vec:
+        return carla.Vector3D()
     #Reverse the rotation to account for lefthandedness
     r = math.radians(-1 * yaw)
 
@@ -174,6 +180,9 @@ def rotate_vector(vec, yaw):
 
 #Adjusts the vehicle's coordinates to the local coordinates and orientation of the lane
 def adjust_to_lane(lane_tf, vehicle_tf):
+    if not lane_tf or not vehicle_tf:
+        return carla.Transform()
+
     adj_tf = carla.Transform()
 
     adj_rot = carla.Rotation()
