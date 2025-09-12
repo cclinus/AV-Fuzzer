@@ -9,6 +9,7 @@ from agents.navigation.behavior_agent import BehaviorAgent
 import liability
 import tools
 from collections import namedtuple
+from collections import deque
 
 
 SimulationResult = namedtuple('SimulationResult', [
@@ -17,6 +18,13 @@ SimulationResult = namedtuple('SimulationResult', [
     'isHit',       # Whether a collision occurred
     'isEgoFault',  # If collision, whether ego vehicle was at fault
     'hitTime'      # Frame index when collision happened
+])
+
+WindowEntry = namedtuple('WindowEntry', [
+    'tick',        # Associated time value
+    'transform',   # Transform of a vehicle at t = tick
+    'velocity',    # Velocity of a vehicle at t = tick
+    'acceleration',# Acceleration of a vehicle at t = tick
 ])
 
 def run_simulation(spawn_config, weather_params,
@@ -29,6 +37,7 @@ def run_simulation(spawn_config, weather_params,
     client.set_timeout(10.0)
     client.load_world('Town03')
     world = client.get_world()
+    map = world.get_map()
     tools.set_weather(world, weather_params)
 
     spectator = world.get_spectator()
@@ -51,7 +60,6 @@ def run_simulation(spawn_config, weather_params,
     vehicle = world.spawn_actor(vehicle_bp, ev_tf)
     agent = BehaviorAgent(vehicle, behavior='normal')
     agent.set_destination(ev_end)
-
 
     npc1 = tools.spawn_npc(world, blueprint_library, tools.list_to_transform(spawn_config['npc1']['start']))
     npc2 = tools.spawn_npc(world, blueprint_library, tools.list_to_transform(spawn_config['npc2']['start']))
@@ -81,23 +89,31 @@ def run_simulation(spawn_config, weather_params,
     collision_sensor = world.spawn_actor(collision_bp, carla.Transform(), attach_to=vehicle)
     isHit = False; isEgoFault = False; hitTime = None
     def on_collision(event):
-        nonlocal isHit, isEgoFault, hitTime
+        nonlocal isHit, isEgoFault, hitTime, ego_history, npc1, npc1_history, npc2, npc2_history
         if isHit:
             return
         other = event.other_actor
         if ('vehicle' in event.actor.type_id and
             'vehicle' in other.type_id and
             (event.actor.id == vehicle.id or other.id == vehicle.id)):
+
+            waypoint = map.get_waypoint(event.actor.get_transform().location)
             isHit = True
             hitTime = event.frame
             ev, npc = (event.actor, other) if event.actor.id == vehicle.id else (other, event.actor)
-            isEgoFault = liability.is_ego_fault(ev, npc)
-    collision_sensor.listen(on_collision)
 
+            ev_history = ego_history
+            npc_history = npc1_history
+
+            if npc.id == npc2.id:
+                npc_history = npc2_history
+            
+            isEgoFault = liability.is_ego_fault(ev, ev_history, npc, npc_history, waypoint)
+        
+    collision_sensor.listen(on_collision)
 
     npc1.apply_control(npc1_behaviors[0])
     npc2.apply_control(npc2_behaviors[0])
-
 
     world.tick()
     time.sleep(tick_interval)
@@ -107,16 +123,24 @@ def run_simulation(spawn_config, weather_params,
     lane_change_interval = int(1.0 / tick_interval)
     frame_count = 0
 
+    window_size = 50
+
+    ego_history = deque(maxlen=window_size)
+    ego_start = tools.window_entry(frame_count, vehicle)
+    ego_history.append(ego_start)
+
+    npc1_history = deque(maxlen=window_size)
+    npc1_start = tools.window_entry(frame_count, npc1)
+    npc1_history.append(npc1_start)
+    npc2_history = deque(maxlen=window_size)
+    npc2_start = tools.window_entry(frame_count, npc2)
+    npc2_history.append(npc2_start)
+
     while frame_count < max_frames:
-
-
-
         world.tick()
 
         if isHit or agent.done():
             break
-
-
 
         control = agent.run_step()
         vehicle.apply_control(control)
@@ -142,7 +166,17 @@ def run_simulation(spawn_config, weather_params,
             deltaDlist[i].append(delta)
 
         frame_count += 1
+
+        ego_entry = tools.window_entry(frame_count, vehicle)
+        ego_history.append(ego_entry)
+
+        npc1_entry = tools.window_entry(frame_count, npc1)
+        npc1_history.append(npc1_entry)
+        npc2_entry = tools.window_entry(frame_count, npc2)
+        npc2_history.append(npc2_entry)
+
         time.sleep(tick_interval)
+    
     for actor in (vehicle, npc1, npc2):
         if actor: actor.destroy()
     if collision_sensor:
@@ -186,3 +220,16 @@ def evaluate_individual(spawn_config, weather_params, individual,
     return fitness, result
 
 
+if __name__ == "__main__":
+    weather_config = tools.load_weather_yaml('./parameters/weather.yaml')
+    spawn_config  = tools.load_spawn_yaml('./parameters/test.yaml')
+
+    tick_interval  = 0.05
+    max_frames     = 500
+    interval       = int(1.0/tick_interval)
+    num_intervals  = max_frames//interval + 1
+
+    b1 = tools.generate_npc_behaviors(spawn_config['npc1'], num_intervals, extra_steer_perturb=False)
+    b2 = tools.generate_npc_behaviors(spawn_config['npc2'], num_intervals, extra_steer_perturb=False)
+
+    run_simulation(spawn_config, weather_config, b1, b2, tick_interval, max_frames)

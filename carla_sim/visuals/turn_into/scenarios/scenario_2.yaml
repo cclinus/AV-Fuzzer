@@ -1,0 +1,31 @@
+map:
+  "Town02"
+  
+ev:
+  start: [133.300018, 227.280029, 0.500000]
+  end: [100.300018, 237.280029, 0.500000]
+  rotation: [0.0, 90, 0.0]
+
+npc1:
+  start: [142.300018, 237.280029, 0.5]
+  throttle_range: [1.0, 1.0]
+  brake_chance: 0.0
+  brake_range: [0.0, 0.5]
+  steer_range: [0.0, 0.0]
+  rotation: [0.0, 180.0, 0.0]
+
+npc2:
+  start: [150.300018, 241.280029, 0.5]
+  throttle_range: [0.2, 0.6]
+  brake_chance: 1.0
+  brake_range: [1.0, 1.0]
+  steer_range: [0.0, 0.0]
+  rotation: [0.0, 0.0, 0.0]
+
+pedestrian1:
+  start: [65.874001, 3.542412, 0.3]
+  end: [80.874001, 3.542412, 0.5]
+
+pedestrian2:
+  start: [55.874001, 3.542412, 0.3]
+  end: [90.874001, 3.542412, 0.5]
