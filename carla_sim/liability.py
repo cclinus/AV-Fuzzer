@@ -194,7 +194,7 @@ def rear_end(params, ego_params, npc_params):
     if not (lead_straight and trail_straight):
         return (False, False)
     
-    lead_vertices = lead['box'].get_world_vertices(lead['tf'])
+    """lead_vertices = lead['box'].get_world_vertices(lead['tf'])
     trail_vertices = trail['box'].get_world_vertices(trail['tf'])
 
     lead_back = lead_vertices[0].x
@@ -217,7 +217,7 @@ def rear_end(params, ego_params, npc_params):
         lead_right = max(lead_v.y, lead_right)
 
         trail_left = min(trail_v.y, trail_left)
-        trail_right = max(trail_v.y, trail_right)
+        trail_right = max(trail_v.y, trail_right)"""
 
     #Loose check for the trail actually being "behind" the lead
     """if trail_front - BUFFER > lead_back:
@@ -226,7 +226,7 @@ def rear_end(params, ego_params, npc_params):
     """if lead_right - BUFFER < trail_left or trail_right - BUFFER < lead_left:
         return (False, False)"""
 
-    """lead_acc_avg = 0
+    lead_acc_avg = 0
 
     lead_history = list(lead['hist'])[-10::]
 
@@ -235,7 +235,7 @@ def rear_end(params, ego_params, npc_params):
     lead_acc_avg /= 10
 
     if (lead_acc_avg <= -3 * lead['box'].extent.x):
-        return (True, ego_ahead)"""
+        return (True, ego_ahead)
 
     return (True, not ego_ahead)
 
@@ -305,33 +305,20 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
 
     #We adjust our frame of reference to the lane waypoint
     #So calculations can be simple
-    adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
+    adj_ego = tools.adjust_to_lane(ego_tf, lane_tf)
 
-    ego_hist = []
-    
-    for e in list(ego_history):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
-        frame['vel'] = tools.rotate_vector(e.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
+    ego_hist = list(ego_history)
 
-        ego_hist.append(frame)
+    ego_hist = map(lambda x: tools.rotate_window_entry(x, lane_tf, lane_yaw), ego_hist)
 
     npc_box = npc.bounding_box
     npc_tf = npc.get_transform()
 
-    adj_npc = tools.adjust_to_lane(lane_tf, npc_tf)
+    adj_npc = tools.adjust_to_lane(npc_tf, lane_tf)
 
-    npc_hist = []
-    
-    for n in list(npc_history):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
-        frame['vel'] = tools.rotate_vector(n.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
-        
+    npc_hist = list(npc_history)
 
-        npc_hist.append(frame)
+    npc_hist = map(lambda x: tools.rotate_window_entry(x, lane_tf, lane_yaw), npc_hist)
         
 
     parameters = {
@@ -347,7 +334,7 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     npc_parameters = {
         "box" : npc_box,
         "tf" : adj_npc,
-        "hist" : npc_history
+        "hist" : npc_hist
     }
 
     cases = [head_on, sideswipe, rear_end]

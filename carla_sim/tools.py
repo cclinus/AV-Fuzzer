@@ -179,7 +179,7 @@ def rotate_vector(vec, yaw):
     return carla.Vector3D(x, y, vec.z)
 
 #Adjusts the vehicle's coordinates to the local coordinates and orientation of the lane
-def adjust_to_lane(lane_tf, vehicle_tf):
+def adjust_to_lane(vehicle_tf, lane_tf):
     if not lane_tf or not vehicle_tf:
         return carla.Transform()
 
@@ -199,3 +199,6 @@ def adjust_to_lane(lane_tf, vehicle_tf):
 
 def window_entry(tick, vehicle):
     return simulation.WindowEntry(tick, vehicle.get_transform(), vehicle.get_velocity(), vehicle.get_acceleration())
+
+def rotate_window_entry(entry, lane_tf, lane_yaw):
+    return simulation.WindowEntry(entry.tick, adjust_to_lane(lane_tf, entry.transform), rotate_vector(entry.velocity, lane_yaw), rotate_vector(entry.acceleration, lane_yaw))
