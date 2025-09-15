@@ -218,18 +218,3 @@ def evaluate_individual(spawn_config, weather_params, individual,
     #print(f" evaluate_individual {elapsed_time:.2f}")
 
     return fitness, result
-
-
-if __name__ == "__main__":
-    weather_config = tools.load_weather_yaml('./parameters/weather.yaml')
-    spawn_config  = tools.load_spawn_yaml('./parameters/test.yaml')
-
-    tick_interval  = 0.05
-    max_frames     = 500
-    interval       = int(1.0/tick_interval)
-    num_intervals  = max_frames//interval + 1
-
-    b1 = tools.generate_npc_behaviors(spawn_config['npc1'], num_intervals, extra_steer_perturb=False)
-    b2 = tools.generate_npc_behaviors(spawn_config['npc2'], num_intervals, extra_steer_perturb=False)
-
-    run_simulation(spawn_config, weather_config, b1, b2, tick_interval, max_frames)
