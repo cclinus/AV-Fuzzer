@@ -79,7 +79,7 @@ def head_on(params, ego_params, npc_params):
 
 #Main idea: if the contact point is in the front 2/3rds of the angled vehicle, it is at fault. otherwise, the straight vehicle is at fault
 #TO-DO: determine if the angle vehicle was even allowed to change lanes
-def sideswipe(params, ego_params, npc_params):
+def side_swipe(params, ego_params, npc_params):
     angle = None
     straight = None
 
@@ -306,7 +306,7 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
         "hist" : npc_hist
     }
 
-    cases = [head_on, sideswipe, rear_end]
+    cases = [head_on, side_swipe, rear_end]
 
     answer = False
     collision_case = "unknown"
