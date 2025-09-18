@@ -54,23 +54,6 @@ def head_on(params, ego_params, npc_params):
     if reverse['tf'].location.x < head['tf'].location.x:
         return (False, False)
     
-    head_vertices = head['box'].get_world_vertices(head['tf'])
-    reverse_vertices = reverse['box'].get_world_vertices(reverse['tf'])
-
-    head_front = head_vertices[0].x
-    reverse_back = reverse_vertices[0].x
-
-    for i in range(8):
-        head_v = head_vertices[i]
-        reverse_v = reverse_vertices[i]
-
-        head_front = max(head_v.x, head_front)
-        reverse_back = min(reverse_v.x, reverse_back)
-
-    #Loose check for the reverse actually being in "front" of the head
-    if head_front - BUFFER > reverse_back:
-        return (False, False)
-    
     return (True, ego_reverse)
 
 
@@ -79,6 +62,7 @@ def head_on(params, ego_params, npc_params):
 
 #Main idea: if the contact point is in the front 2/3rds of the angled vehicle, it is at fault. otherwise, the straight vehicle is at fault
 #TO-DO: determine if the angle vehicle was even allowed to change lanes
+#Known issue: low angle sideswipes are excluded
 def side_swipe(params, ego_params, npc_params):
     angle = None
     straight = None
@@ -194,13 +178,20 @@ def rear_end(params, ego_params, npc_params):
     #Consideration: As of writing this (9/10/2025), the allowed angles for rear_end and head_on are different. Should this not be the case?
     if not (lead_straight and trail_straight):
         return (False, False)
+    
+    lead_x = lead['tf'].location.x
+    lead_xtent = lead['box'].extent.x
+    trail_x = trail['tf'].location.x
+
+    if (lead_x - lead_xtent < trail_x) and (trail_x < lead_x + lead_xtent):
+        return (False, False)
 
     lead_acc_avg = 0
 
     lead_history = list(lead['hist'])[-10::]
 
     for frame in lead_history:
-        lead_acc_avg += frame['acc'].x
+        lead_acc_avg += frame.acceleration.x
     lead_acc_avg /= 10
 
     if (lead_acc_avg <= -3 * lead['box'].extent.x):
@@ -320,6 +311,6 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
             collision_case = cases[i].__name__
             break
     
-    #scenario_debug(ego, npc, answer, collision_case, True)
+    scenario_debug(ego, npc, answer, collision_case, False)
     return (answer, collision_case)
 
