@@ -54,6 +54,23 @@ def head_on(params, ego_params, npc_params):
     if reverse['tf'].location.x < head['tf'].location.x:
         return (False, False)
     
+    head_vertices = head['box'].get_world_vertices(head['tf'])
+    reverse_vertices = reverse['box'].get_world_vertices(reverse['tf'])
+
+    head_front = head_vertices[0].x
+    reverse_back = reverse_vertices[0].x
+
+    for i in range(8):
+        head_v = head_vertices[i]
+        reverse_v = reverse_vertices[i]
+
+        head_front = max(head_v.x, head_front)
+        reverse_back = min(reverse_v.x, reverse_back)
+
+    #Loose check for the reverse actually being in "front" of the head
+    if head_front - 1 - BUFFER > reverse_back:
+        return (False, False)
+    
     return (True, ego_reverse)
 
 
