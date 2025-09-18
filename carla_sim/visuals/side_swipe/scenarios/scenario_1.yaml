@@ -12,7 +12,7 @@ npc1:
   brake_chance: 0.0
   brake_range: [0.0, 0.5]
   steer_range: [0.0, 0.0]
-  rotation: [0.0, 15, 0.0]
+  rotation: [0.0, 16, 0.0]
 
 npc2:
   start: [183.880447, 59.902679, 0.300000]
