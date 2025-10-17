@@ -4,14 +4,82 @@ BUFFER = 0.35
 
 #Turn into collision type
 #   visuals/turn_into
+
+#Main idea: find when the turning vehicle started turning, find the position and velocity of the straight vehicle at that point in time
+#if the straight vehicle had the velocity at time t to get from p_t to p_c, turning fault
+#TO-DO: classify the curvature of the turning vehicle to figure out if or when it was turning into another lane
+#TO-DO: add logic for the turning being into a further lane
 def turn_into(params, ego_params, npc_params):
-    return (False, False)
+    turn = None
+    straight = None
+
+    ego_hist = ego_params['hist']
+    npc_hist = npc_params['hist']
+
+    ego_yaw = ego_hist[0].transform.rotation.yaw
+    npc_yaw = ego_hist[0].transform.rotation.yaw
+
+    ego_alt_lane = tools.in_degree_range(ego_yaw, 75, 105) or tools.in_degree_range(ego_yaw, 255, 285)
+    ego_straight = tools.is_straight(ego_yaw)
+
+    npc_alt_lane = tools.in_degree_range(npc_yaw, 75, 105) or tools.in_degree_range(npc_yaw, 255, 285)
+    npc_straight = tools.is_straight(npc_yaw)
+
+    if (ego_alt_lane and npc_alt_lane) or (ego_straight and npc_straight):
+        return (False, False)
+
+    ego_radii = tools.turning_radii(ego_hist)
+    npc_radii = tools.turning_radii(npc_hist)
+
+    ego_avg_radius = sum(ego_radii)/len(ego_radii)
+    npc_avg_radius = sum(npc_radii)/len(npc_radii)
+
+    #specific values subject to change
+    inner_bound = 0.2
+    outer_bound = 4
+
+    if ego_avg_radius < inner_bound and npc_avg_radius < inner_bound:
+        return (False, False)
+
+    if ego_avg_radius > outer_bound and npc_avg_radius > outer_bound:
+        return (False, False)
+    
+    ego_turn = inner_bound < ego_avg_radius and ego_avg_radius < outer_bound
+    if ego_turn:
+        turn = ego_params
+        straight = npc_params
+    else:
+        turn = npc_params
+        straight = ego_params
+
+    turn_start = 0
+
+    for i in range(len(turn['hist'])):
+        if ego_radii[i] > inner_bound:
+            turn_start = i
+            break
+
+    straight_vel = straight['hist'][turn_start].velocity.x
+
+    time_to_crash = 0.05 * (turn['hist'][-1].tick - turn_start + 1)
+
+    straight_start_pos = straight['hist'][turn_start].transform.location.x
+    straight_end_pos = straight['hist'][-1].transform.location.x
+
+    straight_dist = abs(straight_start_pos - straight_end_pos)
+
+    if (straight_dist / straight_vel) < time_to_crash:
+        return (True, ego_turn)
+    else:
+        return (True, not ego_turn)
 
 
 #Turn across opposite lane collision type
 #   visuals/turn_across
+
+#Main idea: same as turn_into, with more specific restrictions
 def turn_across_opp(params, ego_params, npc_params):
-    return (False, False)
+    pass
 
 
 #Head-on collision type
@@ -276,6 +344,7 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     lane_yaw = lane_tf.rotation.yaw % 360
     lane_id = waypoint.lane_id
     lane_change = waypoint.lane_change
+    lane_width = waypoint.lane_width
 
     ego_box = ego.bounding_box
     ego_tf = ego.get_transform()
@@ -299,8 +368,9 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
         
 
     parameters = {
-        "lane_id" : lane_id,
+        "id" : lane_id,
         "lane_change" : lane_change,
+        "width" : lane_width
     }
     ego_parameters = {
         "box" : ego_box,
