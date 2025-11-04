@@ -57,6 +57,12 @@ def run_simulation(spawn_config, weather_params,
     ev_tf   = tools.list_to_transform(spawn_config['ev']['start'])
     ev_end  = tools.list_to_transform(spawn_config['ev']['end']).location
 
+    spec_loc = carla.Location(ev_tf.location.x-80, ev_tf.y, 100)
+    spectator = world.get_spectator()
+    spectator.set_transform(carla.Transform(
+        spec_loc,
+        carla.Rotation(pitch=-35, yaw=0, roll=0)))
+
     vehicle = world.spawn_actor(vehicle_bp, ev_tf)
     agent = BehaviorAgent(vehicle, behavior='normal')
     agent.set_destination(ev_end)
