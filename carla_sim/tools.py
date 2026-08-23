@@ -7,6 +7,7 @@ import os
 import yaml
 from datetime import datetime
 import simulation
+import numpy as np 
 
 def get_speed(actor):
     v = actor.get_velocity()
@@ -179,7 +180,7 @@ def rotate_vector(vec, yaw):
     return carla.Vector3D(x, y, vec.z)
 
 #Adjusts the vehicle's coordinates to the local coordinates and orientation of the lane
-def adjust_to_lane(lane_tf, vehicle_tf):
+def adjust_to_lane(vehicle_tf, lane_tf):
     if not lane_tf or not vehicle_tf:
         return carla.Transform()
 
@@ -199,3 +200,29 @@ def adjust_to_lane(lane_tf, vehicle_tf):
 
 def window_entry(tick, vehicle):
     return simulation.WindowEntry(tick, vehicle.get_transform(), vehicle.get_velocity(), vehicle.get_acceleration())
+
+def rotate_window_entry(entry, lane_tf, lane_yaw):
+    return simulation.WindowEntry(entry.tick, adjust_to_lane(lane_tf, entry.transform), rotate_vector(entry.velocity, lane_yaw), rotate_vector(entry.acceleration, lane_yaw))
+
+def turning_radii(hist):
+    def turning_radius(vel, acc):
+        np_vel = np.array([vel.x, vel.y])
+        np_acc = np.array([acc.x, acc.y])
+
+        inst_vel = np.linalg.norm(np_vel)
+
+        inst_vel = np.linalg.norm(np_vel)
+
+        acc_t = np.dot(np_vel, np_acc) / inst_vel
+
+        acc_n = math.sqrt(np.dot(np_acc, np_acc) - acc_t ** 2)
+
+        cross = np.linalg.norm(acc_n)
+
+        radius = math.pow(inst_vel, 3) / cross
+
+        return radius
+    
+    radii = map(lambda x: turning_radius(x.velocity, x.acceleration), hist)
+
+    return radii

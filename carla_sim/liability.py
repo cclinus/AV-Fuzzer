@@ -4,20 +4,88 @@ BUFFER = 0.35
 
 #Turn into collision type
 #   visuals/turn_into
+
+#Main idea: find when the turning vehicle started turning, find the position and velocity of the straight vehicle at that point in time
+#if the straight vehicle had the velocity at time t to get from p_t to p_c, turning fault
+#TO-DO: classify the curvature of the turning vehicle to figure out if or when it was turning into another lane
+#TO-DO: add logic for the turning being into a further lane
 def turn_into(params, ego_params, npc_params):
-    return (False, False)
+    turn = None
+    straight = None
+
+    ego_hist = ego_params['hist']
+    npc_hist = npc_params['hist']
+
+    ego_yaw = ego_hist[0].transform.rotation.yaw
+    npc_yaw = ego_hist[0].transform.rotation.yaw
+
+    ego_alt_lane = tools.in_degree_range(ego_yaw, 75, 105) or tools.in_degree_range(ego_yaw, 255, 285)
+    ego_straight = tools.is_straight(ego_yaw)
+
+    npc_alt_lane = tools.in_degree_range(npc_yaw, 75, 105) or tools.in_degree_range(npc_yaw, 255, 285)
+    npc_straight = tools.is_straight(npc_yaw)
+
+    if (ego_alt_lane and npc_alt_lane) or (ego_straight and npc_straight):
+        return (False, False)
+
+    ego_radii = tools.turning_radii(ego_hist)
+    npc_radii = tools.turning_radii(npc_hist)
+
+    ego_avg_radius = sum(ego_radii)/len(ego_radii)
+    npc_avg_radius = sum(npc_radii)/len(npc_radii)
+
+    #specific values subject to change
+    inner_bound = 0.2
+    outer_bound = 4
+
+    if ego_avg_radius < inner_bound and npc_avg_radius < inner_bound:
+        return (False, False)
+
+    if ego_avg_radius > outer_bound and npc_avg_radius > outer_bound:
+        return (False, False)
+    
+    ego_turn = inner_bound < ego_avg_radius and ego_avg_radius < outer_bound
+    if ego_turn:
+        turn = ego_params
+        straight = npc_params
+    else:
+        turn = npc_params
+        straight = ego_params
+
+    turn_start = 0
+
+    for i in range(len(turn['hist'])):
+        if ego_radii[i] > inner_bound:
+            turn_start = i
+            break
+
+    straight_vel = straight['hist'][turn_start].velocity.x
+
+    time_to_crash = 0.05 * (turn['hist'][-1].tick - turn_start + 1)
+
+    straight_start_pos = straight['hist'][turn_start].transform.location.x
+    straight_end_pos = straight['hist'][-1].transform.location.x
+
+    straight_dist = abs(straight_start_pos - straight_end_pos)
+
+    if (straight_dist / straight_vel) < time_to_crash:
+        return (True, ego_turn)
+    else:
+        return (True, not ego_turn)
 
 
 #Turn across opposite lane collision type
 #   visuals/turn_across
+
+#Main idea: same as turn_into, with more specific restrictions
 def turn_across_opp(params, ego_params, npc_params):
-    return (False, False)
+    pass
 
 
 #Head-on collision type
 #   visuals/head_on
 
-#Main idea: determine the direction of the lane, whoever doesn't match is at fault
+#Main idea: Determine the direction of the lane, whoever doesn't match is at fault
 def head_on(params, ego_params, npc_params):
 
     head = None
@@ -34,14 +102,15 @@ def head_on(params, ego_params, npc_params):
     npc_reverse = tools.in_degree_range(npc_yaw, 120, 240)
 
 
-    #at least one of them has to be turned around, but they both cant be turned around
+    #At least one vehicle has to be turned around, but they both can't be turned around
     if not (ego_reverse ^ npc_reverse):
         return (False, False)
     
-    #at least one of them has to be going forward, but they cant both be going forward
+    #At least one of them has to be going forward, but they can't both be going forward
     if not (ego_forward ^ npc_forward):
         return (False, False)
     
+    #Decide who is the headward vehicle and who is the "reversed" vehicle (with respect to the lane's orientation)
     if ego_reverse:
         reverse = ego_params
         head = npc_params
@@ -49,7 +118,7 @@ def head_on(params, ego_params, npc_params):
         reverse = npc_params
         head = ego_params
     
-    #If the reverse is behind the head, this isn't a head-on
+    #If the reversed vehicle is behind the headward vehicle, this isn't a head-on collision
     if reverse['tf'].location.x < head['tf'].location.x:
         return (False, False)
     
@@ -67,7 +136,7 @@ def head_on(params, ego_params, npc_params):
         reverse_back = min(reverse_v.x, reverse_back)
 
     #Loose check for the reverse actually being in "front" of the head
-    if head_front - BUFFER > reverse_back:
+    if head_front - 1 - BUFFER > reverse_back:
         return (False, False)
     
     return (True, ego_reverse)
@@ -78,11 +147,12 @@ def head_on(params, ego_params, npc_params):
 
 #Main idea: if the contact point is in the front 2/3rds of the angled vehicle, it is at fault. otherwise, the straight vehicle is at fault
 #TO-DO: determine if the angle vehicle was even allowed to change lanes
-def sideswipe(params, ego_params, npc_params):
+#Known issue: low angle sideswipes are excluded
+def side_swipe(params, ego_params, npc_params):
     angle = None
     straight = None
 
-    #If both vehicles are straight, this is not a sideswipe
+    #If both vehicles are straight, this is not a sideswipe collision
     ego_yaw = ego_params['tf'].rotation.yaw
     npc_yaw = npc_params['tf'].rotation.yaw
 
@@ -103,7 +173,7 @@ def sideswipe(params, ego_params, npc_params):
         straight = ego_params
     
 
-    #If the angled vehicle is at an extreme angle, this is not a sideswipe
+    #If the angled vehicle is at an extreme angle, this is not a sideswipe collision
     angle_yaw = angle['tf'].rotation.yaw
 
     direction = angle['tf'].location.y < straight['tf'].location.y
@@ -116,7 +186,7 @@ def sideswipe(params, ego_params, npc_params):
             return (False, False)
 
     
-    #if the angled vehicle is completely behind the straight vehicle, this is not a sideswipe
+    #If the angled vehicle is completely behind the straight vehicle, this is not a sideswipe
     angle_vertices = angle['box'].get_world_vertices(angle['tf'])
     angle_front = angle_vertices[0].x
     angle_back = angle_vertices[0].x
@@ -138,7 +208,7 @@ def sideswipe(params, ego_params, npc_params):
         return (False, False)
 
 
-    #add some logic here about if lane change is allowed or not
+    #TO-DO: Add logic here about if lane change is allowed or not
     lane_change = params['lane_change']
     #
     #
@@ -168,7 +238,6 @@ def sideswipe(params, ego_params, npc_params):
 
 #Main idea: if the lead vehicle comes to a very abrupt stop, it should be at fault. otherwise, the trailing vehicle is at fault
 #TO-DO: develop a more robust idea. this is only one stage better than original
-#TO-DO: add more logic about the lead coming to an abrupt stop
 def rear_end(params, ego_params, npc_params):
 
     ego_ahead = npc_params['tf'].location.x < ego_params['tf'].location.x
@@ -176,6 +245,7 @@ def rear_end(params, ego_params, npc_params):
     lead = None
     trail = None
 
+    #Decide who is the leading vehicle and who is the trailing vehicle
     if ego_ahead:
         lead = ego_params
         trail = npc_params
@@ -194,48 +264,23 @@ def rear_end(params, ego_params, npc_params):
     if not (lead_straight and trail_straight):
         return (False, False)
     
-    lead_vertices = lead['box'].get_world_vertices(lead['tf'])
-    trail_vertices = trail['box'].get_world_vertices(trail['tf'])
+    lead_x = lead['tf'].location.x
+    lead_xtent = lead['box'].extent.x
+    trail_x = trail['tf'].location.x
 
-    lead_back = lead_vertices[0].x
-    trail_front = trail_vertices[0].x
+    if (lead_x - lead_xtent < trail_x) and (trail_x < lead_x + lead_xtent):
+        return (False, False)
 
-    lead_left = lead_vertices[0].y
-    lead_right = lead_vertices[0].y
-
-    trail_left = trail_vertices[0].y
-    trail_right = trail_vertices[0].y
-
-    for i in range(8):
-        lead_v = lead_vertices[i]
-        trail_v = trail_vertices[i]
-
-        lead_back = min(lead_v.x, lead_back)
-        trail_front = max(trail_v.x, trail_front)
-
-        lead_left = min(lead_v.y, lead_left)
-        lead_right = max(lead_v.y, lead_right)
-
-        trail_left = min(trail_v.y, trail_left)
-        trail_right = max(trail_v.y, trail_right)
-
-    #Loose check for the trail actually being "behind" the lead
-    """if trail_front - BUFFER > lead_back:
-        return (False, False)"""
-
-    """if lead_right - BUFFER < trail_left or trail_right - BUFFER < lead_left:
-        return (False, False)"""
-
-    """lead_acc_avg = 0
+    lead_acc_avg = 0
 
     lead_history = list(lead['hist'])[-10::]
 
     for frame in lead_history:
-        lead_acc_avg += frame['acc'].x
+        lead_acc_avg += frame.acceleration.x
     lead_acc_avg /= 10
 
     if (lead_acc_avg <= -3 * lead['box'].extent.x):
-        return (True, ego_ahead)"""
+        return (True, ego_ahead)
 
     return (True, not ego_ahead)
 
@@ -299,44 +344,33 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     lane_yaw = lane_tf.rotation.yaw % 360
     lane_id = waypoint.lane_id
     lane_change = waypoint.lane_change
+    lane_width = waypoint.lane_width
 
     ego_box = ego.bounding_box
     ego_tf = ego.get_transform()
 
     #We adjust our frame of reference to the lane waypoint
     #So calculations can be simple
-    adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
+    adj_ego = tools.adjust_to_lane(ego_tf, lane_tf)
 
-    ego_hist = []
-    
-    for e in list(ego_history):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
-        frame['vel'] = tools.rotate_vector(e.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
+    ego_hist = list(ego_history)
 
-        ego_hist.append(frame)
+    ego_hist = map(lambda x: tools.rotate_window_entry(x, lane_tf, lane_yaw), ego_hist)
 
     npc_box = npc.bounding_box
     npc_tf = npc.get_transform()
 
-    adj_npc = tools.adjust_to_lane(lane_tf, npc_tf)
+    adj_npc = tools.adjust_to_lane(npc_tf, lane_tf)
 
-    npc_hist = []
-    
-    for n in list(npc_history):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
-        frame['vel'] = tools.rotate_vector(n.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
-        
+    npc_hist = list(npc_history)
 
-        npc_hist.append(frame)
+    npc_hist = map(lambda x: tools.rotate_window_entry(x, lane_tf, lane_yaw), npc_hist)
         
 
     parameters = {
-        "lane_id" : lane_id,
+        "id" : lane_id,
         "lane_change" : lane_change,
+        "width" : lane_width
     }
     ego_parameters = {
         "box" : ego_box,
@@ -347,10 +381,10 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
     npc_parameters = {
         "box" : npc_box,
         "tf" : adj_npc,
-        "hist" : npc_history
+        "hist" : npc_hist
     }
 
-    cases = [head_on, sideswipe, rear_end]
+    cases = [head_on, side_swipe, rear_end]
 
     answer = False
     collision_case = "unknown"
@@ -364,82 +398,6 @@ def is_ego_fault(ego, ego_history, npc, npc_history, waypoint):
             collision_case = cases[i].__name__
             break
     
-    #scenario_debug(ego, npc, answer, collision_case, True)
+    scenario_debug(ego, npc, answer, collision_case, False)
     return (answer, collision_case)
 
-def is_ego_fault_test(ego, npc, waypoint):
-    
-    if not npc:
-        return True
-    
-    lane_tf = waypoint['tf']
-    lane_yaw = lane_tf.rotation.yaw % 360
-    lane_id = waypoint['id']
-    lane_change = waypoint['change']
-
-    ego_box = ego['box']
-    ego_tf = ego['tf']
-
-    
-    adj_ego = tools.adjust_to_lane(lane_tf, ego_tf)
-
-    """ego_hist = []
-    
-    for e in list(ego['hist']):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, e.transform)
-        frame['vel'] = tools.rotate_vector(e.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(e.acceleration, lane_yaw)
-
-        ego_hist.append(frame)"""
-
-
-    npc_box = npc['box']
-    npc_tf = npc['tf']
-
-
-    adj_npc = tools.adjust_to_lane(lane_tf, npc_tf)
-
-    npc_hist = []
-
-    """for n in list(npc['hist']):
-        frame = {}
-        frame['tf'] = tools.adjust_to_lane(lane_tf, n.transform)
-        frame['vel'] = tools.rotate_vector(n.velocity, lane_yaw)
-        frame['acc'] = tools.rotate_vector(n.acceleration, lane_yaw)
-
-        npc_hist.append(frame)
-"""
-    parameters = {
-        "lane_tf" : lane_tf,
-        "lane_id" : lane_id,
-        "lane_change" : lane_change,
-    }
-    ego_parameters = {
-        "box" : ego_box,
-        "tf" : adj_ego,
-        #"hist" : ego_hist
-    }
-
-    npc_parameters = {
-        "box" : npc_box,
-        "tf" : adj_npc,
-        #"hist" : npc_hist
-    }
-
-    cases = [head_on, sideswipe, rear_end]
-
-    answer = False
-    collision_case = "unknown"
-    
-    for i in range(len(cases)):
-        result = cases[i](parameters, ego_parameters, npc_parameters)
-
-        #3a. If the scenario applies, return its determination
-        if (result[0]):        
-            answer = result[1]
-            collision_case = cases[i].__name__
-            break
-    
-    #scenario_debug(ego, npc, answer, collision_case, True)
-    return (answer, collision_case)
