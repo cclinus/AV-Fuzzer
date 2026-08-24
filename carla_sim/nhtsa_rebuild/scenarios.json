@@ -1,0 +1,442 @@
+[
+ {
+  "map": "Town03",
+  "conflict": "rear_end",
+  "nhtsa": "Rear-end (LVD)",
+  "ev": {
+   "start": [
+    -6.45,
+    -79.06,
+    0.28
+   ],
+   "rotation": 92.0,
+   "end": [
+    -23.21,
+    6.1,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -5.98,
+     -61.04,
+     0.3
+    ],
+    "rotation": 91.4,
+    "cfg": {
+     "throttle_range": [
+      0.2,
+      0.5
+     ],
+     "brake_chance": 0.5,
+     "brake_range": [
+      0.3,
+      1.0
+     ],
+     "steer_range": [
+      0.0,
+      0.02
+     ]
+    }
+   }
+  ],
+  "name": "rear_end_1"
+ },
+ {
+  "map": "Town03",
+  "conflict": "head_on",
+  "nhtsa": "Opposing-direction (OD)",
+  "ev": {
+   "start": [
+    -149.06,
+    91.17,
+    0.28
+   ],
+   "rotation": 89.6,
+   "end": [
+    -89.66,
+    135.49,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -135.28,
+     133.24,
+     0.3
+    ],
+    "rotation": 210.7,
+    "cfg": {
+     "throttle_range": [
+      0.4,
+      0.8
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.3
+     ],
+     "steer_range": [
+      0.0,
+      0.03
+     ]
+    }
+   }
+  ],
+  "name": "head_on_1"
+ },
+ {
+  "map": "Town03",
+  "conflict": "crossing",
+  "nhtsa": "Intersection / crossing (SCP)",
+  "ev": {
+   "start": [
+    23.75,
+    -193.61,
+    0.28
+   ],
+   "rotation": 1.4,
+   "end": [
+    113.72,
+    -191.15,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     86.16,
+     -170.34,
+     3.34
+    ],
+    "rotation": 270.2,
+    "cfg": {
+     "throttle_range": [
+      0.11,
+      0.17
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.3
+     ],
+     "steer_range": [
+      0.0,
+      0.06
+     ]
+    }
+   }
+  ],
+  "name": "crossing_1"
+ },
+ {
+  "map": "Town03",
+  "conflict": "rear_end",
+  "nhtsa": "Rear-end (LVD)",
+  "ev": {
+   "start": [
+    -88.64,
+    149.85,
+    0.28
+   ],
+   "rotation": 89.8,
+   "end": [
+    -27.35,
+    207.6,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -87.3,
+     168.89,
+     0.3
+    ],
+    "rotation": 437.4,
+    "cfg": {
+     "throttle_range": [
+      0.2,
+      0.5
+     ],
+     "brake_chance": 0.5,
+     "brake_range": [
+      0.3,
+      1.0
+     ],
+     "steer_range": [
+      0.0,
+      0.02
+     ]
+    }
+   }
+  ],
+  "name": "rear_end_2"
+ },
+ {
+  "map": "Town03",
+  "conflict": "head_on",
+  "nhtsa": "Opposing-direction (OD)",
+  "ev": {
+   "start": [
+    -149.05,
+    76.14,
+    0.28
+   ],
+   "rotation": 90.0,
+   "end": [
+    -104.96,
+    136.35,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -145.82,
+     121.44,
+     0.3
+    ],
+    "rotation": 243.8,
+    "cfg": {
+     "throttle_range": [
+      0.4,
+      0.8
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.3
+     ],
+     "steer_range": [
+      0.0,
+      0.03
+     ]
+    }
+   }
+  ],
+  "name": "head_on_2"
+ },
+ {
+  "map": "Town03",
+  "conflict": "sideswipe",
+  "nhtsa": "Lane-change / merge (LC)",
+  "ev": {
+   "start": [
+    -6.45,
+    -79.06,
+    0.28
+   ],
+   "rotation": 92.0,
+   "end": [
+    -23.21,
+    6.1,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -2.28,
+     -68.95,
+     0.3
+    ],
+    "rotation": 91.4,
+    "cfg": {
+     "throttle_range": [
+      0.4,
+      0.7
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.2
+     ],
+     "steer_range": [
+      0.03,
+      0.09
+     ]
+    }
+   }
+  ],
+  "name": "sideswipe_1"
+ },
+ {
+  "map": "Town03",
+  "conflict": "crossing",
+  "nhtsa": "Intersection / crossing (SCP)",
+  "ev": {
+   "start": [
+    23.75,
+    -193.61,
+    0.28
+   ],
+   "rotation": 1.4,
+   "end": [
+    113.72,
+    -191.15,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     86.16,
+     -170.34,
+     3.34
+    ],
+    "rotation": 270.2,
+    "cfg": {
+     "throttle_range": [
+      0.11,
+      0.17
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.3
+     ],
+     "steer_range": [
+      0.0,
+      0.06
+     ]
+    }
+   }
+  ],
+  "name": "crossing_2"
+ },
+ {
+  "map": "Town03",
+  "conflict": "head_on",
+  "nhtsa": "Opposing-direction (OD)",
+  "ev": {
+   "start": [
+    -88.64,
+    149.85,
+    0.28
+   ],
+   "rotation": 89.8,
+   "end": [
+    -27.35,
+    207.6,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -73.06,
+     194.86,
+     0.3
+    ],
+    "rotation": 224.5,
+    "cfg": {
+     "throttle_range": [
+      0.4,
+      0.8
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.3
+     ],
+     "steer_range": [
+      0.0,
+      0.03
+     ]
+    }
+   }
+  ],
+  "name": "head_on_3"
+ },
+ {
+  "map": "Town03",
+  "conflict": "rear_end",
+  "nhtsa": "Rear-end (LVD)",
+  "ev": {
+   "start": [
+    -149.05,
+    76.14,
+    0.28
+   ],
+   "rotation": 90.0,
+   "end": [
+    -104.96,
+    136.35,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -149.06,
+     94.14,
+     0.3
+    ],
+    "rotation": 90.0,
+    "cfg": {
+     "throttle_range": [
+      0.2,
+      0.5
+     ],
+     "brake_chance": 0.5,
+     "brake_range": [
+      0.3,
+      1.0
+     ],
+     "steer_range": [
+      0.0,
+      0.02
+     ]
+    }
+   }
+  ],
+  "name": "rear_end_3"
+ },
+ {
+  "map": "Town03",
+  "conflict": "sideswipe",
+  "nhtsa": "Lane-change / merge (LC)",
+  "ev": {
+   "start": [
+    -6.45,
+    -79.06,
+    0.28
+   ],
+   "rotation": 92.0,
+   "end": [
+    -23.21,
+    6.1,
+    0.0
+   ]
+  },
+  "npcs": [
+   {
+    "start": [
+     -2.28,
+     -68.95,
+     0.3
+    ],
+    "rotation": 91.4,
+    "cfg": {
+     "throttle_range": [
+      0.4,
+      0.7
+     ],
+     "brake_chance": 0.1,
+     "brake_range": [
+      0.0,
+      0.2
+     ],
+     "steer_range": [
+      0.03,
+      0.09
+     ]
+    }
+   }
+  ],
+  "name": "sideswipe_2"
+ }
+]

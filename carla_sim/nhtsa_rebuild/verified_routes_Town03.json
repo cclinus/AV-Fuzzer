@@ -1,0 +1,204 @@
+{
+ "map": "Town03",
+ "next_dist": 90.0,
+ "routes": [
+  {
+   "spawn_index": 0,
+   "start": [
+    -6.45,
+    -79.06,
+    0.28
+   ],
+   "rotation": 92.0,
+   "end": [
+    -23.21,
+    6.1,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 3.6,
+    "end_dist": 3.6,
+    "frames": 255
+   }
+  },
+  {
+   "spawn_index": 44,
+   "start": [
+    -149.06,
+    91.17,
+    0.28
+   ],
+   "rotation": 89.6,
+   "end": [
+    -89.66,
+    135.49,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 2.8,
+    "end_dist": 2.8,
+    "frames": 268
+   }
+  },
+  {
+   "spawn_index": 88,
+   "start": [
+    124.7,
+    59.01,
+    0.28
+   ],
+   "rotation": 179.9,
+   "end": [
+    70.08,
+    70.58,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 4.1,
+    "end_dist": 4.1,
+    "frames": 228
+   }
+  },
+  {
+   "spawn_index": 132,
+   "start": [
+    23.75,
+    -193.61,
+    0.28
+   ],
+   "rotation": 1.4,
+   "end": [
+    113.72,
+    -191.15,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 3.2,
+    "end_dist": 3.2,
+    "frames": 257
+   }
+  },
+  {
+   "spawn_index": 154,
+   "start": [
+    -88.64,
+    149.85,
+    0.28
+   ],
+   "rotation": 89.8,
+   "end": [
+    -27.35,
+    207.6,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 3.9,
+    "end_dist": 3.9,
+    "frames": 214
+   }
+  },
+  {
+   "spawn_index": 176,
+   "start": [
+    -149.05,
+    76.14,
+    0.28
+   ],
+   "rotation": 90.0,
+   "end": [
+    -104.96,
+    136.35,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 3.6,
+    "end_dist": 3.6,
+    "frames": 261
+   }
+  },
+  {
+   "spawn_index": 198,
+   "start": [
+    -149.01,
+    5.16,
+    0.41
+   ],
+   "rotation": 90.0,
+   "end": [
+    -149.06,
+    95.16,
+    0.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 2.8,
+    "end_dist": 2.8,
+    "frames": 258
+   }
+  },
+  {
+   "spawn_index": 242,
+   "start": [
+    16.88,
+    -134.41,
+    0.4
+   ],
+   "rotation": 1.2,
+   "end": [
+    106.86,
+    -132.48,
+    8.0
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 3.3,
+    "end_dist": 3.3,
+    "frames": 261
+   }
+  },
+  {
+   "spawn_index": 264,
+   "start": [
+    -85.21,
+    -126.87,
+    0.28
+   ],
+   "rotation": 89.8,
+   "end": [
+    -84.97,
+    -36.88,
+    -0.38
+   ],
+   "verify": {
+    "spawned": true,
+    "reached": true,
+    "offroad": 0,
+    "min_dist": 2.7,
+    "end_dist": 2.7,
+    "frames": 258
+   }
+  }
+ ]
+}
