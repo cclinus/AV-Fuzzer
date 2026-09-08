@@ -47,4 +47,7 @@ Configuration files are stored in the parameter directory. Key sections:
 - AV-FUZZER: Finding Safety Violations in Autonomous Driving Systems (ISSRE'20)
   
 ## License
-This project is licensed under the BSD 3-Clause License. See the [LICENSE](./LICENSE) file for details.      
+This project is licensed under the BSD 3-Clause License. See the [LICENSE](./LICENSE) file for details.     
+
+## Acknowledgements
+This project is supported by NSF OAC CSSI [#2544839](https://www.nsf.gov/awardsearch/show-award/?AWD_ID=2544839).
