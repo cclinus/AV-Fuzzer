@@ -13,6 +13,7 @@ import random
 from collections import namedtuple
 import yaml
 from datetime import datetime
+import argparse
 
 def get_similarity_between_npc_behaviors(b1, b2):
     n = min(len(b1), len(b2))
@@ -219,7 +220,14 @@ def genetic_fuzzer(spawn_config, weather_params,
     return best_ind, best_fit
 
 if __name__ == '__main__':
-    ga_cfg = tools.load_ga_config('./parameters/ga.yaml')
+    parser = argparse.ArgumentParser(prog = 'GA.py', description='AV-Fuzzer Genetic Algorithm')
+    parser.add_argument('-g', '--genetics', default='parameters/GA.yaml', type=str, metavar='path/to/genetics.yaml')
+    parser.add_argument('-w', '--weather', default='parameters/weather.yaml', type=str, metavar='path/to/weather.yaml')
+    parser.add_argument('-s', '--spawn', default='parameters/spawn.yaml', type=str, metavar='path/to/spawn.yaml')
+
+    args = parser.parse_args()
+
+    ga_cfg = tools.load_ga_config(args.genetics)
 
     POP_SIZE       = ga_cfg['pop_size']
     MAX_GENS       = ga_cfg['max_gens']
@@ -227,8 +235,8 @@ if __name__ == '__main__':
     MUTATION_RATE  = ga_cfg['mutation_rate']
     TOURNAMENT_K   = ga_cfg['tournament_k']
 
-    weather_config = tools.load_weather_yaml('./parameters/weather.yaml')
-    spawn_config  = tools.load_spawn_yaml('./parameters/spawn.yaml')
+    weather_config = tools.load_weather_yaml(args.weather)
+    spawn_config  = tools.load_spawn_yaml(args.spawn)
 
 
     best_ind, best_fit = genetic_fuzzer(
